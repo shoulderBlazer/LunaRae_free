@@ -7,8 +7,11 @@ class StoryService {
   StoryService(this.apiKey);
 
   Future<String> generateStory(String input) async {
-    final url = Uri.parse("https://api.openai.com/v1/chat/completions");
+    if (apiKey.isEmpty) {
+      throw Exception('OpenAI API key is not configured. Please add OPENAI_API_KEY to your .env file.');
+    }
 
+    final url = Uri.parse("https://api.openai.com/v1/chat/completions");
 
     try {
       final response = await http.post(

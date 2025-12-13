@@ -152,7 +152,7 @@ class _StoryGeneratorScreenState extends State<StoryGeneratorScreen> {
                             DreamyInput(
                               controller: promptController,
                               hintText: "A sleepy unicorn who can't find her stars…",
-                              maxLines: 4,
+                              onSubmitted: _isLoading ? null : _generateStory,
                             ),
                             
                             const SizedBox(height: 24),

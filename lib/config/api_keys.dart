@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class ApiKeys {
-  static const String openAiKey = String.fromEnvironment('OPENAI_API_KEY');
+  static String get openAiKey => dotenv.env['OPENAI_API_KEY'] ?? '';
 }

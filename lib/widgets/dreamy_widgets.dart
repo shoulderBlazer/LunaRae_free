@@ -240,12 +240,14 @@ class DreamyInput extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final int maxLines;
+  final VoidCallback? onSubmitted;
   
   const DreamyInput({
     super.key,
     required this.controller,
     required this.hintText,
     this.maxLines = 3,
+    this.onSubmitted,
   });
 
   @override
@@ -263,7 +265,9 @@ class DreamyInput extends StatelessWidget {
       ),
       child: TextField(
         controller: controller,
-        maxLines: maxLines,
+        maxLines: onSubmitted != null ? 1 : maxLines,
+        textInputAction: onSubmitted != null ? TextInputAction.done : TextInputAction.newline,
+        onSubmitted: onSubmitted != null ? (_) => onSubmitted!() : null,
         style: LunaTheme.body(context).copyWith(
           color: LunaTheme.textPrimary(context),
         ),
