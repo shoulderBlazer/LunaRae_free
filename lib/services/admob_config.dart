@@ -5,10 +5,7 @@ import 'package:flutter/foundation.dart';
 /// 
 /// - Automatically detects Android vs iOS platform
 /// - Automatically detects debug vs release mode
-/// - Uses Google test ad IDs in debug mode ONLY
-/// - Uses production ad IDs in release mode ONLY
-/// - Prevents test ads from ever showing in production
-/// - Prevents real ads from ever showing in debug
+/// - Always uses production ad IDs (real AdMob ads)
 class AdMobConfig {
   AdMobConfig._(); // Private constructor - no instantiation
 
@@ -57,36 +54,24 @@ class AdMobConfig {
   static bool get isReleaseMode => kReleaseMode;
 
   // ============================================================
-  // SAFE AD UNIT ID GETTERS
-  // These methods guarantee:
-  // - Test ads ONLY in debug mode
-  // - Production ads ONLY in release mode
+  // AD UNIT ID GETTERS - Always returns production IDs
   // ============================================================
 
   /// Banner Ad ID for Screen 1
-  /// Returns test ID in debug, production ID in release
+  /// Always returns production ID
   static String get bannerAdIdScreen1 {
-    if (isDebugMode) {
-      return _getTestBannerId();
-    }
     return _getProductionBannerIdScreen1();
   }
 
   /// Banner Ad ID for Screen 2
-  /// Returns test ID in debug, production ID in release
+  /// Always returns production ID
   static String get bannerAdIdScreen2 {
-    if (isDebugMode) {
-      return _getTestBannerId();
-    }
     return _getProductionBannerIdScreen2();
   }
 
   /// Interstitial Ad ID for After Story
-  /// Returns test ID in debug, production ID in release
+  /// Always returns production ID
   static String get interstitialAdIdAfterStory {
-    if (isDebugMode) {
-      return _getTestInterstitialId();
-    }
     return _getProductionInterstitialIdAfterStory();
   }
 
@@ -118,7 +103,6 @@ class AdMobConfig {
 
   /// Gets production banner ID for Screen 1
   static String _getProductionBannerIdScreen1() {
-    assert(isReleaseMode, 'Production ads should never be requested in debug mode');
     if (isAndroid) {
       return _androidBannerScreen1;
     } else if (isIOS) {
@@ -129,7 +113,6 @@ class AdMobConfig {
 
   /// Gets production banner ID for Screen 2
   static String _getProductionBannerIdScreen2() {
-    assert(isReleaseMode, 'Production ads should never be requested in debug mode');
     if (isAndroid) {
       return _androidBannerScreen2;
     } else if (isIOS) {
@@ -140,7 +123,6 @@ class AdMobConfig {
 
   /// Gets production interstitial ID for After Story
   static String _getProductionInterstitialIdAfterStory() {
-    assert(isReleaseMode, 'Production ads should never be requested in debug mode');
     if (isAndroid) {
       return _androidInterstitialAfterStory;
     } else if (isIOS) {

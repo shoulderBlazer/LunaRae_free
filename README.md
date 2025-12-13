@@ -1,4 +1,4 @@
-# lunarae
+# LunaRae
 
 A new Flutter project.
 
