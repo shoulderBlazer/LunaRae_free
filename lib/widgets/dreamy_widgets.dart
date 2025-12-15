@@ -265,8 +265,11 @@ class DreamyInput extends StatelessWidget {
       ),
       child: TextField(
         controller: controller,
-        maxLines: onSubmitted != null ? 1 : maxLines,
-        textInputAction: onSubmitted != null ? TextInputAction.done : TextInputAction.newline,
+        maxLines: maxLines,
+        textInputAction:
+            onSubmitted != null ? TextInputAction.done : TextInputAction.newline,
+        keyboardType:
+            onSubmitted != null ? TextInputType.text : TextInputType.multiline,
         onSubmitted: onSubmitted != null ? (_) => onSubmitted!() : null,
         style: LunaTheme.body(context).copyWith(
           color: LunaTheme.textPrimary(context),
