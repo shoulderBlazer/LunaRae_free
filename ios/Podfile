@@ -42,6 +42,7 @@ flutter_ios_podfile_setup
 
 target 'Runner' do
   use_frameworks! :linkage => :static
+  use_modular_headers!
 
   pod 'FirebaseCore', :modular_headers => true
   pod 'FirebaseInstallations', :modular_headers => true
