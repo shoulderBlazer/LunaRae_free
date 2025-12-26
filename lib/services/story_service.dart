@@ -21,7 +21,7 @@ class StoryService {
           "Authorization": "Bearer $apiKey",
         },
         body: jsonEncode({
-          "model": "gpt-4.1-mini",
+          "model": "gpt-4o-mini",
           "messages": [
             {
               "role": "system",
