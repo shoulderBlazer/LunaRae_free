@@ -11,16 +11,17 @@ import 'services/analytics_service.dart';
 
 void main() async {
   runZonedGuarded<Future<void>>(() async {
+    // Initialize Flutter bindings first
     WidgetsFlutterBinding.ensureInitialized();
     
-    // Load environment variables (fail-safe for missing .env)
-    try {
-      await dotenv.load(fileName: ".env");
-    } catch (e) {
-      debugPrint('Warning: .env file not found. API features may not work.');
-    }
+    // Load environment variables - this will throw if .env is missing
+    // which is what we want in production
+    await dotenv.load(fileName: ".env");
     
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    // Initialize Firebase after environment is loaded
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     
     // Initialize Crashlytics
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
