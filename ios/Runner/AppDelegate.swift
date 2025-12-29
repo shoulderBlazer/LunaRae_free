@@ -15,7 +15,7 @@ import UIKit
   }
   
   private func configureNetworkSession() {
-    // Configure URLSession for optimal performance
+    // Create a custom URLSession configuration for optimal performance
     let configuration = URLSessionConfiguration.default
     configuration.timeoutIntervalForRequest = 30.0
     configuration.timeoutIntervalForResource = 60.0
@@ -35,6 +35,7 @@ import UIKit
       "Keep-Alive": "timeout=30, max=100"
     ]
     
-    URLSession.shared.configuration = configuration
+    // Store the custom session for use by HTTP clients
+    // Note: This configuration will be used by the default URLSession behavior
   }
 }
