@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'analytics_service.dart';
@@ -50,10 +51,7 @@ class StoryService {
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $apiKey",
-          "Connection": "keep-alive",
           "Accept": "application/json",
-          "Accept-Encoding": "gzip, deflate, br",
-          "User-Agent": "LunaRae-iOS/1.0",
         },
         body: requestBody,
       ).timeout(
@@ -62,8 +60,8 @@ class StoryService {
       );
 
       if (response.statusCode == 200) {
-        // Async JSON decoding to avoid blocking
-        final data = await compute(_decodeJson, response.body);
+        // Standard JSON decoding for better compatibility
+        final data = jsonDecode(response.body);
 
         try {
           final story = data["choices"][0]["message"]["content"]?.trim() ??
@@ -85,6 +83,12 @@ class StoryService {
         );
         throw Exception("Failed to generate story: ${response.body}");
       }
+    } on TimeoutException catch (e) {
+      await AnalyticsService.logStoryGenerateFailed('Timeout: $e');
+      throw Exception("Request timed out. Please check your connection and try again.");
+    } on SocketException catch (e) {
+      await AnalyticsService.logStoryGenerateFailed('Network error: $e');
+      throw Exception("Network error. Please check your internet connection.");
     } catch (e) {
       if (e is! Exception || !e.toString().contains('Failed to generate story')) {
         // Log unexpected errors (network issues, etc.)
