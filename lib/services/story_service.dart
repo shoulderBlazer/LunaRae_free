@@ -1,10 +1,29 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'analytics_service.dart';
 
 class StoryService {
   final String apiKey;
-  StoryService(this.apiKey);
+  late final http.Client _client;
+  
+  StoryService(this.apiKey) {
+    _client = _createOptimizedClient();
+  }
+
+  http.Client _createOptimizedClient() {
+    if (Platform.isIOS) {
+      // iOS-specific optimizations
+      return http.ClientWithTimeout(
+        Duration(seconds: 30),
+        onBadCertificate: (X509Certificate cert, String host) => host == 'api.openai.com',
+      );
+    } else {
+      // Default client for other platforms
+      return http.Client();
+    }
+  }
 
   Future<String> generateStory(String input) async {
     if (apiKey.isEmpty) {
@@ -14,34 +33,42 @@ class StoryService {
     final url = Uri.parse("https://api.openai.com/v1/chat/completions");
 
     try {
-      final response = await http.post(
+      // Pre-encode JSON to avoid blocking during request
+      final requestBody = jsonEncode({
+        "model": "gpt-4o-mini",
+        "messages": [
+          {
+            "role": "system",
+            "content":
+                "You are LunaRae, a gentle storyteller who writes calm, happy bedtime stories for children ages 2 to 10. "
+                "Stories must avoid fear, danger, sadness, violence, and villains. "
+                "Every story should be relaxing, positive, kind, imaginative, and end with peaceful sleep."
+          },
+          {
+            "role": "user",
+            "content": "Create a short bedtime story about: $input"
+          }
+        ],
+        "max_tokens": 700,
+        "temperature": 0.7,
+      });
+
+      final response = await _client.post(
         url,
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $apiKey",
+          "Connection": "keep-alive",
+          "Accept": "application/json",
+          "Accept-Encoding": "gzip, deflate, br",
+          "User-Agent": "LunaRae-iOS/1.0",
         },
-        body: jsonEncode({
-          "model": "gpt-4o-mini",
-          "messages": [
-            {
-              "role": "system",
-              "content":
-                  "You are LunaRae, a gentle storyteller who writes calm, happy bedtime stories for children ages 2 to 10. "
-                  "Stories must avoid fear, danger, sadness, violence, and villains. "
-                  "Every story should be relaxing, positive, kind, imaginative, and end with peaceful sleep."
-            },
-            {
-              "role": "user",
-              "content": "Create a short bedtime story about: $input"
-            }
-          ],
-          "max_tokens": 700,
-          "temperature": 0.7,
-        }),
+        body: requestBody,
       );
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        // Async JSON decoding to avoid blocking
+        final data = await compute(_decodeJson, response.body);
 
         try {
           final story = data["choices"][0]["message"]["content"]?.trim() ??
@@ -72,4 +99,13 @@ class StoryService {
       rethrow;
     }
   }
+  
+  void dispose() {
+    _client.close();
+  }
+}
+
+// Helper function for compute
+Future<Map<String, dynamic>> _decodeJson(String jsonString) async {
+  return jsonDecode(jsonString);
 }

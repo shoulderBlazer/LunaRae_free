@@ -22,16 +22,19 @@ class StoryGeneratorScreen extends StatefulWidget {
 class _StoryGeneratorScreenState extends State<StoryGeneratorScreen> {
   final TextEditingController promptController = TextEditingController();
   bool _isLoading = false;
+  StoryService? _storyService;
 
   @override
   void initState() {
     super.initState();
     AnalyticsService.logScreenPromptOpened();
+    _storyService = StoryService(ApiKeys.openAiKey);
   }
 
   @override
   void dispose() {
     promptController.dispose();
+    _storyService?.dispose();
     super.dispose();
   }
 
@@ -61,10 +64,12 @@ class _StoryGeneratorScreenState extends State<StoryGeneratorScreen> {
     AnalyticsService.logStoryGeneratePressed();
     setState(() => _isLoading = true);
 
-    final service = StoryService(ApiKeys.openAiKey);
+    if (_storyService == null) {
+      _storyService = StoryService(ApiKeys.openAiKey);
+    }
 
     try {
-      final story = await service.generateStory(promptController.text.trim());
+      final story = await _storyService!.generateStory(promptController.text.trim());
       
       if (!mounted) return;
       
