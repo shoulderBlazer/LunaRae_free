@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'firebase_options.dart';
 import 'theme/theme.dart';
 import 'screens/story_generator_screen.dart';
@@ -14,11 +13,7 @@ void main() async {
     // Initialize Flutter bindings first
     WidgetsFlutterBinding.ensureInitialized();
     
-    // Load environment variables - this will throw if .env is missing
-    // which is what we want in production
-    await dotenv.load(fileName: ".env");
-    
-    // Initialize Firebase after environment is loaded
+    // Initialize Firebase
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );

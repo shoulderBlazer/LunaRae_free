@@ -112,69 +112,74 @@ class _StoryGeneratorScreenState extends State<StoryGeneratorScreen> {
     return Scaffold(
       extendBody: true,
       bottomNavigationBar: BannerAdWithFooter(footerLinks: const _FooterLinks()),
-      body: DreamyBackground(
-        child: SafeArea(
-          child: SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: screenHeight - topPadding,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 40),
-                    
-                    // Centered Story Card
-                    DreamyCard(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(minHeight: 600),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // App Logo
-                            Image.asset(
-                              'assets/images/lunarae_logo_1024x1024.png',
-                              height: 260,
-                            ),
-                            
-                            const SizedBox(height: 24),
-                            
-                            // Prompt helper title
-                            Text(
-                              'Create me magical story about:',
-                              style: LunaTheme.body(context).copyWith(
-                                fontSize: 15,
-                                fontStyle: FontStyle.italic,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: DreamyBackground(
+          child: SafeArea(
+            child: SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: screenHeight - topPadding,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 40),
+                      
+                      // Centered Story Card
+                      DreamyCard(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(minHeight: 600),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // App Logo
+                              Image.asset(
+                                'assets/images/lunarae_logo_1024x1024.png',
+                                height: 260,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            
-                            const SizedBox(height: 20),
-                            
-                            // Prompt Input - pill-shaped
-                            DreamyInput(
-                              controller: promptController,
-                              hintText: "A sleepy unicorn who can't find her stars…",
-                              onSubmitted: _isLoading ? null : _generateStory,
-                            ),
-                            
-                            const SizedBox(height: 24),
-                            
-                            // Primary Button
-                            DreamyPrimaryButton(
-                              text: "Create My Bedtime Story",
-                              onPressed: _isLoading ? null : _generateStory,
-                              isLoading: _isLoading,
-                            ),
-                          ],
+                              
+                              const SizedBox(height: 24),
+                              
+                              // Prompt helper title
+                              Text(
+                                'Create me magical story about:',
+                                style: LunaTheme.body(context).copyWith(
+                                  fontSize: 15,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              
+                              const SizedBox(height: 20),
+                              
+                              // Prompt Input - pill-shaped
+                              DreamyInput(
+                                controller: promptController,
+                                hintText: "A sleepy unicorn who can't find her stars…",
+                                onSubmitted: _isLoading ? null : _generateStory,
+                              ),
+                              
+                              const SizedBox(height: 24),
+                              
+                              // Primary Button
+                              DreamyPrimaryButton(
+                                text: "Create My Bedtime Story",
+                                onPressed: _isLoading ? null : _generateStory,
+                                isLoading: _isLoading,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    
-                    const SizedBox(height: 40),
-                  ],
+                      
+                      const SizedBox(height: 40),
+                    ],
+                  ),
                 ),
               ),
             ),
