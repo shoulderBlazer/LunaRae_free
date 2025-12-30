@@ -1,4 +1,5 @@
 class ApiKeys {
-  // Replace with your actual OpenAI API key
-  static const String openAiKey = 'sk-your-actual-openai-api-key-here';
+  // OpenAI API key from CodeMagic environment variable
+  static const String openAiKey = String.fromEnvironment('OPENAI_API_KEY', 
+    defaultValue: 'sk-your-actual-openai-api-key-here');
 }
